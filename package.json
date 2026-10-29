@@ -1,5 +1,5 @@
 {
-  "name": "deepseek-native-browser",
+  "name": "dsh-native-browser-bdg",
   "version": "1.0.0",
   "description": "DeepSeek \u539f\u751f\u6d4f\u89c8\u5668\u6269\u5c55\uff1a\u590d\u7528 DeepSeek Harness \u5b98\u65b9\u4fa7\u8fb9\u680f\u6d4f\u89c8\u5668\uff0c\u5728\u5e94\u7528\u5185\u539f\u751f\u8fd0\u884c\uff0c\u4e0d\u542f\u52a8\u5916\u90e8 Chrome\uff0c\u65e0\u9700\u5207\u5c4f\u3002",
   "type": "module",
@@ -7,11 +7,11 @@
   "author": "safumo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/safumo/dsh-native-browser-ext.git"
+    "url": "https://github.com/safumo/dsh-native-browser-bdg.git"
   },
-  "homepage": "https://github.com/safumo/dsh-native-browser-ext#readme",
+  "homepage": "https://github.com/safumo/dsh-native-browser-bdg#readme",
   "bugs": {
-    "url": "https://github.com/safumo/dsh-native-browser-ext/issues"
+    "url": "https://github.com/safumo/dsh-native-browser-bdg/issues"
   },
   "keywords": [
     "deepseek",

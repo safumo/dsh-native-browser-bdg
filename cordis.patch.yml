@@ -6,7 +6,7 @@
 # restarts the app with an ephemeral debugging port, Cancel leaves it untouched.
 - insert:
     - id: native-browser
-      name: deepseek-native-browser
+      name: dsh-native-browser-bdg
       disabled: !!js "ctx.get('profileContext')?.name !== 'desktop'"
       config:
         autoRestart: prompt
