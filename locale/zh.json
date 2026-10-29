@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "浏览器 CDP 控制",
+    "description": "通过 Chrome DevTools Protocol 驱动内置侧栏浏览器：导航、快照点击、Cookie、存储、网络与截图。"
+  }
+}

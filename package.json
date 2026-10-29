@@ -1,0 +1,71 @@
+{
+  "name": "dsh-browser-cdp",
+  "version": "1.0.0",
+  "description": "DeepSeek Harness bundle: drive the in-app Sidebar browser over the Chrome DevTools Protocol, with CDP auto-restart, persistent userscripts and an optional stealth layer.",
+  "type": "module",
+  "license": "MIT",
+  "author": "dsh-browser-cdp contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_GITHUB_USER/dsh-browser-cdp.git"
+  },
+  "homepage": "https://github.com/YOUR_GITHUB_USER/dsh-browser-cdp#readme",
+  "bugs": {
+    "url": "https://github.com/YOUR_GITHUB_USER/dsh-browser-cdp/issues"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "cdp",
+    "chrome-devtools-protocol",
+    "browser-automation",
+    "electron"
+  ],
+  "engines": {
+    "node": ">=22.0.0",
+    "dsh": ">=0.2.1-rc.3"
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./client": "./lib/client/index.js"
+  },
+  "meta": {
+    "title": "Browser CDP Control",
+    "description": "Drive the in-app Sidebar browser over the Chrome DevTools Protocol: navigation, snapshot/click, cookies, storage, network and screenshots."
+  },
+  "icon": "./icon.svg",
+  "files": [
+    "lib/**/*.js",
+    "locale/*.json",
+    "icon.svg",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE",
+    "scripts/dsh-cdp.sh"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check:lib": "npm run build && git diff --exit-code -- lib",
+    "pack:check": "npm pack --dry-run",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar-right"
+      ],
+      "platform": "web"
+    }
+  }
+}

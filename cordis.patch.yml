@@ -1,0 +1,12 @@
+# Browser CDP Control — profile patch layer.
+#
+# The endpoint is discovered at runtime (DevToolsActivePort / browser-cdp.json /
+# conventional ports). When the app starts without CDP, the plugin shows a
+# Cancel/OK dialog after a few seconds; OK restarts the app with
+# --remote-debugging-port=0, Cancel leaves it untouched.
+- insert:
+    - id: browser-cdp
+      name: dsh-browser-cdp
+      disabled: !!js "ctx.get('profileContext')?.name !== 'desktop'"
+      config:
+        autoRestart: prompt
