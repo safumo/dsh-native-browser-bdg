@@ -68,7 +68,7 @@ pnpm add dsh-native-browser-bdg
 ### GitHub 安装（npm 发布前可用）
 
 ```json
-{ "action": "install_bundle", "target": "github:safumo/dsh-native-browser-bdg#v1.0.0" }
+{ "action": "install_bundle", "target": "github:safumo/dsh-native-browser-bdg#v1.0.1" }
 ```
 
 或最新 main：
@@ -357,22 +357,30 @@ npm view dsh-native-browser-bdg version
 `prepublishOnly` 会执行 `npm run build`，`lib/` 会先刷新；包是 unscoped，
 `publishConfig.access` 为 `public`。
 
+**1.0.0 是坏的**：它的 client bundle 是 ESM，DSH 按 classic script 加载会报
+`Unexpected token 'export'`。1.0.1 已改为
+`window.__ModuleLoader__.load({ id, factory })` 工厂格式。发布 1.0.1 后建议标记旧版本：
+
+```bash
+npm deprecate dsh-native-browser-bdg@1.0.0 "broken client bundle; use 1.0.1"
+```
+
 发布后 DSH 提示框即可接受 `dsh-native-browser-bdg`；
-`plugin_manager install_bundle dsh-native-browser-bdg@1.0.0` 是等价的工具调用。
+`plugin_manager install_bundle dsh-native-browser-bdg@1.0.1` 是等价的工具调用。
 
 ## 发布仓库
 
 ```bash
 git remote -v          # origin 应为 safumo/dsh-native-browser-bdg
 git push -u origin main
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.0.1
+git push origin v1.0.1
 ```
 
 在 GitHub 创建 Release。用户也可以按 tag 安装：
 
 ```text
-github:safumo/dsh-native-browser-bdg#v1.0.0
+github:safumo/dsh-native-browser-bdg#v1.0.1
 ```
 
 `lib/` 是已提交的构建产物，GitHub 安装不需要 Node/TypeScript。不要把 `lib/` 加入
