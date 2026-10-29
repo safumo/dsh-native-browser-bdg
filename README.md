@@ -266,7 +266,7 @@ Host bundle 没有直接打开/拆分侧栏的 API：布局属于客户端
 `ui-sidebar-right` / `ui-dockkit`。插件包含一个 **opt-in 客户端探针**：
 
 ```js
-localStorage['dsh-browser-cdp.probe'] = 'split'
+localStorage['dsh-native-browser-bdg.probe'] = 'split'
 ```
 
 客户端重载后：
@@ -277,7 +277,7 @@ localStorage['dsh-browser-cdp.probe'] = 'split'
 4. 如果得到新 pane，调用
    `ctx.sidebarRight.openTab('browser', { paneId, params: { url } })`。
 
-结果写入 `localStorage['dsh-browser-cdp.probe.result']`。
+结果写入 `localStorage['dsh-native-browser-bdg.probe.result']`。
 
 前提：
 

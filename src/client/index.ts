@@ -1,7 +1,7 @@
 /**
  * Client half: an opt-in probe that can split the right Sidebar and open a
  * browser tab in the new pane. It is inert unless
- * `localStorage['dsh-browser-cdp.probe'] === 'split'`.
+ * `localStorage['dsh-native-browser-bdg.probe'] === 'split'`.
  */
 
 interface ObservableSnapshot<T> {
@@ -27,8 +27,8 @@ interface ClientContext {
 
 export const inject = ['sidebarRight']
 
-const PROBE_KEY = 'dsh-browser-cdp.probe'
-const RESULT_KEY = 'dsh-browser-cdp.probe.result'
+const PROBE_KEY = 'dsh-native-browser-bdg.probe'
+const RESULT_KEY = 'dsh-native-browser-bdg.probe.result'
 const RETRY_MS = 500
 const MAX_ATTEMPTS = 40
 
@@ -76,7 +76,7 @@ export function apply(ctx: ClientContext): void {
     }
   }, RETRY_MS)
 
-  ctx.effect(() => stop, 'browser-cdp: split probe')
+  ctx.effect(() => stop, 'native-browser: split probe')
 }
 
 export type { PaneIdBrand }

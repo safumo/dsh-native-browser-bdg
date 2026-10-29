@@ -32,7 +32,7 @@
     "./package.json": "./package.json",
     "./locale/*.json": "./locale/*.json",
     "./icon": "./icon.svg",
-    "./client": "./lib/client/index.js"
+    "./client": "./lib/client.js"
   },
   "meta": {
     "title": "DeepSeek \u539f\u751f\u6d4f\u89c8\u5668\u6269\u5c55",
@@ -49,7 +49,7 @@
     "scripts/dsh-native-browser.sh"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node scripts/build-client.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "check:lib": "npm run build && git diff --exit-code -- lib",
     "pack:check": "npm pack --dry-run",
