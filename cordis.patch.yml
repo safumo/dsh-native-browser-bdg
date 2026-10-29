@@ -1,12 +1,12 @@
-# Browser CDP Control — profile patch layer.
+# DeepSeek 原生浏览器扩展 — profile patch layer.
 #
-# The endpoint is discovered at runtime (DevToolsActivePort / browser-cdp.json /
-# conventional ports). When the app starts without CDP, the plugin shows a
-# Cancel/OK dialog after a few seconds; OK restarts the app with
-# --remote-debugging-port=0, Cancel leaves it untouched.
+# The app-side debugging endpoint is discovered at runtime (DevToolsActivePort /
+# browser-cdp.json / conventional ports). When the app starts without browser
+# debugging, the plugin shows a Cancel/OK dialog after a few seconds; OK
+# restarts the app with an ephemeral debugging port, Cancel leaves it untouched.
 - insert:
-    - id: browser-cdp
-      name: dsh-browser-cdp-plugin
+    - id: native-browser
+      name: deepseek-native-browser
       disabled: !!js "ctx.get('profileContext')?.name !== 'desktop'"
       config:
         autoRestart: prompt

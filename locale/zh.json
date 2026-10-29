@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "浏览器 CDP 控制",
-    "description": "通过 Chrome DevTools Protocol 驱动内置侧栏浏览器：导航、快照点击、Cookie、存储、网络与截图。"
+    "title": "DeepSeek 原生浏览器扩展",
+    "description": "复用 DeepSeek Harness 官方侧边栏浏览器，在应用内原生运行，不启动外部 Chrome，无需切屏。"
   }
 }

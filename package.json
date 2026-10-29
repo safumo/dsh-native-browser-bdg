@@ -1,7 +1,7 @@
 {
-  "name": "dsh-browser-cdp-plugin",
+  "name": "deepseek-native-browser",
   "version": "1.0.0",
-  "description": "DeepSeek Harness bundle: drive the in-app Sidebar browser over the Chrome DevTools Protocol, with CDP auto-restart, persistent userscripts and an optional stealth layer.",
+  "description": "DeepSeek \u539f\u751f\u6d4f\u89c8\u5668\u6269\u5c55\uff1a\u590d\u7528 DeepSeek Harness \u5b98\u65b9\u4fa7\u8fb9\u680f\u6d4f\u89c8\u5668\uff0c\u5728\u5e94\u7528\u5185\u539f\u751f\u8fd0\u884c\uff0c\u4e0d\u542f\u52a8\u5916\u90e8 Chrome\uff0c\u65e0\u9700\u5207\u5c4f\u3002",
   "type": "module",
   "license": "MIT",
   "author": "safumo",
@@ -14,11 +14,12 @@
     "url": "https://github.com/safumo/dsh-browser-cdp/issues"
   },
   "keywords": [
+    "deepseek",
     "deepseek-harness",
     "dsh",
     "dsh-plugin",
-    "cdp",
-    "chrome-devtools-protocol",
+    "native-browser",
+    "sidebar-browser",
     "browser-automation",
     "electron"
   ],
@@ -34,8 +35,8 @@
     "./client": "./lib/client/index.js"
   },
   "meta": {
-    "title": "Browser CDP Control",
-    "description": "Drive the in-app Sidebar browser over the Chrome DevTools Protocol: navigation, snapshot/click, cookies, storage, network and screenshots."
+    "title": "DeepSeek \u539f\u751f\u6d4f\u89c8\u5668\u6269\u5c55",
+    "description": "\u590d\u7528 DeepSeek Harness \u5b98\u65b9\u4fa7\u8fb9\u680f\u6d4f\u89c8\u5668\uff1b\u4e0d\u662f\u5916\u90e8 Chrome\uff0c\u4e0d\u9700\u8981\u6d4f\u89c8\u5668\u6269\u5c55\uff0c\u5e94\u7528\u5185\u539f\u751f\u8fd0\u884c\u3001\u65e0\u9700\u5207\u5c4f\u3002"
   },
   "icon": "./icon.svg",
   "files": [
@@ -45,7 +46,7 @@
     "cordis.patch.yml",
     "README.md",
     "LICENSE",
-    "scripts/dsh-cdp.sh"
+    "scripts/dsh-native-browser.sh"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",

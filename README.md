@@ -1,105 +1,83 @@
 ![CI](https://github.com/safumo/dsh-browser-cdp/actions/workflows/ci.yml/badge.svg)
-[![npm](https://img.shields.io/npm/v/dsh-browser-cdp-plugin.svg)](https://www.npmjs.com/package/dsh-browser-cdp-plugin)
+[![npm](https://img.shields.io/npm/v/deepseek-native-browser.svg)](https://www.npmjs.com/package/deepseek-native-browser)
 
-# dsh-browser-cdp
+# DeepSeek 原生浏览器扩展
 
-**Install name:** [`dsh-browser-cdp-plugin`](https://www.npmjs.com/package/dsh-browser-cdp-plugin)  
-**Repository:** [`safumo/dsh-browser-cdp`](https://github.com/safumo/dsh-browser-cdp)
+**安装名：** [`deepseek-native-browser`](https://www.npmjs.com/package/deepseek-native-browser)  
+**仓库：** [`safumo/dsh-browser-cdp`](https://github.com/safumo/dsh-browser-cdp)
 
-A **DeepSeek Harness bundle** that drives the in-app **Sidebar browser** over the
-Chrome DevTools Protocol (CDP).
+复用 **DeepSeek Harness 官方侧边栏浏览器**（应用内 `<webview>`），在 DSH 窗口里原生运行。
 
-No Chrome extension, no native-messaging host, no extra bridge server and no
-custom launcher: the plugin attaches to the `<webview>` guests that the Sidebar
-already creates and exposes a `browser_*` tool family to the agent.
+它**不是**外部 Chrome，**不是** Chrome 扩展，也**不需要** Playwright、ChromeDriver、native messaging
+或额外的本地服务。自动化直接操作 DSH 右侧栏里已经打开的页面，**无需切屏**、无需切换窗口。
 
-> **Security note:** CDP exposes the whole app Chromium, including the
-> `dsh-app://app` UI page. The plugin refuses `page` targets by default and only
-> drives Sidebar `webview` guests. The endpoint is loopback-only, but any local
-> process that can read the port can control the browser. Treat it like a local
-> debugging port, not a public API.
+## 它是什么，不是什么
 
-## Features
+| 是 | 不是 |
+|---|---|
+| DSH 原生 bundle，注册 `browser_*` 工具 | 外部 Chrome / Edge 实例 |
+| 复用官方 Sidebar 的 `<webview>` guest | Chrome Web Store 扩展 |
+| 在 DSH 窗口内直接操作页面 | Playwright / Puppeteer / ChromeDriver |
+| 需要时自动重启 DSH 以开启应用内调试端口 | 需要手动启动一个带调试端口的 Chrome |
+| 页面、Cookie、存储、网络、截图都在 Sidebar 内 | 额外浏览器窗口或切屏操作 |
 
-- Navigation, history, reload
-- ARIA snapshot with `e1…eN` refs, click / type / select / hover / scroll /
-  key press / file upload
-- Read page as text, HTML or accessibility tree
-- Screenshots (viewport or full page), console, network capture and response
-  bodies, performance metrics
-- Cookie jar (including HttpOnly), `localStorage` / `sessionStorage`
-- One-shot JavaScript and **persistent userscripts** stored under `$DSH_HOME`,
-  re-injected after a plugin/app restart
-- Optional **stealth layer**: Chrome UA + Client Hints, `window.chrome` helpers,
-  iframe coverage
-- **Automatic CDP restart**: if the app was started without remote debugging,
-  the plugin offers a Cancel/OK dialog and relaunches it with a free CDP port
+> 技术上，插件通过 Chromium 调试协议连接 DSH 已经创建的侧边栏 webview。
+> 这是**应用内**的侧边栏浏览器，不是外部 Chrome，也不是浏览器扩展。
 
-## Requirements
+## 功能
 
-- DeepSeek Harness **desktop** app, version `0.2.1-rc.3` or newer
-- macOS or Windows (the desktop app's supported platforms; Linux is untested)
-- The app must be able to restart itself (the plugin does this on demand)
+- 导航、前进/后退、刷新
+- ARIA 快照和 `e1…eN` ref，click / type / select / hover / scroll / press key / upload
+- 文本、HTML、可访问性树读取
+- 截图（视口/整页）、Console、网络请求与响应体、性能计数
+- Cookie（含 HttpOnly）、`localStorage` / `sessionStorage`
+- 一次性 JS 和 **持久用户脚本**（存放在 `$DSH_HOME`，插件/应用重启后重新注入）
+- 可选 **stealth 层**：Chrome UA/Client Hints、`window.chrome`、iframe 覆盖
+- 自动调试端点：应用未开启时弹窗，OK 后自动重启并连接
 
-End users do **not** need Node.js, npm or Git when installing a GitHub release /
-prebuilt bundle. Node.js 22+ is only needed for development.
+## 安装
 
-The plugin never runs in a Web profile: it is disabled by the bundle patch and
-also checks `process.versions.electron` at runtime.
+### DSH 提示框（推荐）
 
-## Install
-
-### The DSH prompt (recommended)
-
-In DeepSeek Harness, open the plugin installer and choose **Enter the plugin's
-npm package name**, then enter:
+在 DeepSeek Harness 中打开插件安装器，选择 **Enter the plugin's npm package name**，输入：
 
 ```
-dsh-browser-cdp-plugin
+deepseek-native-browser
 ```
 
-Or use the CLI / package manager:
+或使用 CLI / pnpm：
 
 ```bash
-dsh plugin add dsh-browser-cdp-plugin
+dsh plugin add deepseek-native-browser
 # or
-pnpm add dsh-browser-cdp-plugin
+pnpm add deepseek-native-browser
 ```
 
-The **npm package is `dsh-browser-cdp-plugin`**; the repository is
-`safumo/dsh-browser-cdp`. The unscoped `dsh-browser-cdp` name is already used by
-an unrelated npm package, so the installable package uses the `-plugin` suffix.
+**npm 包名是 `deepseek-native-browser`**；仓库名是 `safumo/dsh-browser-cdp`。
+两者不同是正常的：仓库保留历史地址，安装时只认 npm 包名。
 
-The package ships prebuilt `lib/` files, so a DSH install does not require
-Node.js, npm or a TypeScript build on the target machine. Restart DeepSeek
-Harness once after installing; the bundle patch inserts the Host row
-`browser-cdp` automatically.
+> 必须先发布到 npm，提示框才能按包名安装。维护者见
+> [发布到 npm](#发布到-npm)。
 
-> The package must be published to npm first. Maintainers: see
-> [Publish to npm](#publish-to-npm).
+> **从旧版升级：** 早期版本使用 `dsh-browser-cdp` / `browser-cdp` 行。安装本包前
+> 先移除/禁用旧 bundle，否则两个行会同时注册 `browser_*` 工具。
 
-### From GitHub (alternative)
+安装后重启一次 DeepSeek Harness；bundle patch 会插入 Host 行
+`native-browser`。
 
-If the package is not on npm, install the repository tag through the plugin
-manager:
+### GitHub 安装（npm 发布前可用）
 
 ```json
 { "action": "install_bundle", "target": "github:safumo/dsh-browser-cdp#v1.0.0" }
 ```
 
-Latest `main`:
+或最新 main：
 
 ```json
 { "action": "install_bundle", "target": "github:safumo/dsh-browser-cdp" }
 ```
 
-A plain HTTPS spec can also work in some DSH builds:
-
-```
-https://github.com/safumo/dsh-browser-cdp
-```
-
-### From a local clone
+### 本地路径
 
 ```bash
 git clone https://github.com/safumo/dsh-browser-cdp.git
@@ -108,149 +86,144 @@ npm install
 npm run build
 ```
 
-Then install the absolute path:
-
 ```json
 { "action": "install_bundle", "target": "/absolute/path/to/dsh-browser-cdp" }
 ```
 
-Windows PowerShell:
+Windows PowerShell：
 
 ```json
-{ "action": "install_bundle", "target": "C:\\Users\\<you>\\dsh-browser-cdp" }
+{ "action": "install_bundle", "target": "C:\\\\Users\\\\<you>\\\\dsh-browser-cdp" }
 ```
 
-If your DSH build requires a `file:` spec, use
-`file:C:/Users/<you>/dsh-browser-cdp` (or the macOS/Linux equivalent). Quote
-paths that contain spaces.
+如果 DSH 构建要求 `file:` spec，用 `file:C:/Users/<you>/dsh-browser-cdp`。
 
-### After install
+### 安装后
 
-1. Restart DeepSeek Harness.
-2. Open a page in the right Sidebar (or call `browser_navigate`).
-3. Run `browser_diagnose`.
+1. 重启 DSH。
+2. 打开右侧栏页面，或调用 `browser_navigate`。
+3. 执行 `browser_diagnose`。
 
-If the app was started without CDP, the plugin shows a dialog after a short
-grace period. **OK** restarts the app with `--remote-debugging-port=<free port>`;
-**Cancel** stops polling for this process. You can also call the explicit
-`browser_enable_cdp` tool at any time.
+如果应用启动时没有开启调试端点，插件会在短暂等待后弹窗：
+**OK** 自动重启应用并连接，**Cancel** 停止本进程轮询。
+也可以随时调用 `browser_enable_cdp`。
 
-## First launch and CDP
+## 原生运行，无需切屏
 
-Chromium only starts its DevTools server during browser-process initialization,
-so an already-running app cannot enable CDP in place. On startup the plugin polls
-every three seconds:
+- 不启动外部 Chrome：所有操作作用于 DSH 已经创建的 Sidebar `<webview>`。
+- 不创建额外浏览器窗口：页面就在 DSH 右侧栏里，当前窗口内完成。
+- 不需要浏览器扩展或 native host：没有 Chrome Web Store、没有 `chrome.debugger`。
+- 不需要 Playwright/Puppeteer/ChromeDriver：直接连接应用内 Sidebar guest。
+- 默认的 `browser_navigate` 只导航指定 target；如需多标签，使用 Sidebar 自身的标签/`window.open`。
 
-- if a CDP endpoint is found, polling stops;
-- after the grace period, with no endpoint and no dialog open, it offers one
-  Cancel/OK dialog (or restarts silently when `autoRestart: always`);
-- **OK** writes a request, a detached helper quits the app, relaunches the app
-  executable with a free port, and waits for `/json/version` to answer;
-- **Cancel** marks the process as `cancelled` and stops polling. The explicit
-  `browser_enable_cdp` tool still works.
+首次安装后可能需要**重启一次 DSH** 来开启应用内调试端口；之后不再需要切屏或切换外部浏览器。
 
-The helper is a detached Node process and does not hardcode an install path:
+### 调试端点
 
-- app executable: `process.execPath`;
-- main process: `process.ppid`;
-- macOS: `osascript` quit, `.app` bundle name derived from the executable path;
-- Windows: `taskkill`, PowerShell/WPF confirmation dialog;
-- launch: removes `ELECTRON_RUN_AS_NODE` so the Electron binary starts as the
-  app, not as Node;
-- endpoint: published to `$DSH_HOME/browser-cdp.json` only after CDP answers.
+Chromium 只在浏览器进程初始化时启动调试端口，所以已经在运行的应用不能原地开启。
+启动时插件每 3 秒轮询一次：
 
-Logs:
+- 找到端点即停止；
+- 超过宽限期仍没有，且当前没有弹窗，显示一个 Cancel/OK 弹窗；
+- **OK** 由独立 helper 退出应用，使用空闲端口重启，并等待 `/json/version`；
+- **Cancel** 标记为 `cancelled` 并停止轮询；`browser_enable_cdp` 仍然可用。
 
-- macOS/Linux: `~/.dsh/browser-cdp-restart.log`
-- Windows: `%USERPROFILE%\.dsh\browser-cdp-restart.log`
-- override the directory with `DSH_HOME`
+helper 不硬编码安装路径：
 
-### macOS launcher (optional)
+- 应用可执行文件：`process.execPath`
+- 主进程：`process.ppid`
+- macOS：`osascript` 退出；Windows：`taskkill`
+- 启动前删除 `ELECTRON_RUN_AS_NODE`，让 Electron 二进制以应用方式启动
+- 端点只在 `/json/version` 响应后写入 `$DSH_HOME/browser-cdp.json`
 
-`scripts/dsh-cdp.sh` is a macOS convenience wrapper. It locates the app bundle by
-bundle id (`com.deepseek.dsh`) through Spotlight/AppleScript, so it does not
-hardcode `/Applications/...`:
+日志：
+
+- macOS/Linux：`~/.dsh/browser-cdp-restart.log`
+- Windows：`%USERPROFILE%\.dsh\browser-cdp-restart.log`
+- 可用 `DSH_HOME` 覆盖目录
+
+### macOS 启动器（可选）
+
+`scripts/dsh-native-browser.sh` 是 macOS 便利脚本，通过 bundle id `com.deepseek.dsh`
+定位应用，不硬编码 `/Applications/...`：
 
 ```bash
-scripts/dsh-cdp.sh            # focus a connected app, or start a stopped one
-scripts/dsh-cdp.sh --restart  # relaunch a running app without CDP
-scripts/dsh-cdp.sh --prompt   # ask before relaunching
+scripts/dsh-native-browser.sh            # focus 已连接的应用，或启动未运行的应用
+scripts/dsh-native-browser.sh --restart  # 重启一个未开启端点的运行中应用
+scripts/dsh-native-browser.sh --prompt   # 重启前询问
 ```
 
-Windows does not use this script; the plugin's startup dialog and
-`browser_enable_cdp` are the supported path.
+Windows 不需要这个脚本；使用安装弹窗或 `browser_enable_cdp`。
 
-## Tools
+## 工具
 
-| Tool | Purpose |
+| 工具 | 用途 |
 | --- | --- |
-| `browser_diagnose` | Endpoint/target report and relaunch hint |
-| `browser_enable_cdp` | Restart the app with CDP when the endpoint is missing |
-| `browser_list_tabs` | Controllable Sidebar targets (`targetId`, title, URL, lease) |
-| `browser_navigate` / `browser_back` / `browser_forward` / `browser_reload` | Navigation |
-| `browser_snapshot` | Visible interactive elements with `e1…eN` refs |
-| `browser_click` / `browser_type` / `browser_select` / `browser_hover` / `browser_scroll` / `browser_press_key` | Input |
-| `browser_read_page` | `text`, `html` or accessibility tree |
-| `browser_screenshot` | Viewport or `fullPage`, attached as an image |
-| `browser_evaluate` | Main-world JavaScript, JSON result |
-| `browser_inject_script` | One-shot JS, or persisted under `$DSH_HOME` and re-injected |
-| `browser_list_scripts` | List persisted userscripts and the store path |
-| `browser_get_cookies` / `browser_set_cookie` | Cookie jar of the tab partition (HttpOnly included) |
+| `browser_diagnose` | 端点/target 报告与重启提示 |
+| `browser_enable_cdp` | 端点缺失时重启应用并开启调试端口 |
+| `browser_list_tabs` | Sidebar target 列表（`targetId`、标题、URL、lease） |
+| `browser_navigate` / `browser_back` / `browser_forward` / `browser_reload` | 导航 |
+| `browser_snapshot` | 可见交互元素与 `e1…eN` ref |
+| `browser_click` / `browser_type` / `browser_select` / `browser_hover` / `browser_scroll` / `browser_press_key` | 输入 |
+| `browser_read_page` | `text`、`html`、可访问性树 |
+| `browser_screenshot` | 视口或整页截图，作为图片附件 |
+| `browser_evaluate` | 主世界 JS，返回 JSON |
+| `browser_inject_script` | 一次性 JS，或持久化到 `$DSH_HOME` |
+| `browser_list_scripts` | 列出持久脚本和存储路径 |
+| `browser_get_cookies` / `browser_set_cookie` | 标签页分区的 Cookie（含 HttpOnly） |
 | `browser_get_storage` | `localStorage` / `sessionStorage` |
-| `browser_network` / `browser_network_body` | Captured requests and retained response bodies |
-| `browser_console` | Console and `Log` entries |
+| `browser_network` / `browser_network_body` | 网络请求与保留的响应体 |
+| `browser_console` | Console / Log |
 | `browser_upload_file` | `DOM.setFileInputFiles` |
 | `browser_metrics` | `Performance.getMetrics` |
-| `browser_activate_tab` | Best-effort `Target.activateTarget` |
+| `browser_activate_tab` | 尽力激活 target |
 
-Typical flow: `browser_snapshot` → `browser_click` / `browser_type` with a ref.
-Refs are invalidated by any main-frame navigation; take a new snapshot.
+典型流程：`browser_snapshot` → `browser_click` / `browser_type`。
+任何主 frame 导航都会使 ref 失效，需要重新快照。
 
-The default target is the most recently used tab. In split panes, pass an
-explicit `targetId` so a command cannot land in the other pane.
+默认 target 是最近使用的标签页。分屏时请显式传 `targetId`，避免命令落到另一屏。
 
-## Configuration
+## 配置
 
-The bundle row is `browser-cdp`. Defaults:
+bundle 行是 `native-browser`，默认值：
 
-| Field | Default | Meaning |
+| 字段 | 默认 | 含义 |
 | --- | --- | --- |
-| `endpoint` | empty | Empty discovers the running app automatically |
-| `allowPageTargets` | `false` | Never drive the DSH UI page; only `http(s)` pages if enabled |
-| `maxNetworkEvents` | `1000` | Captured network records |
-| `maxConsoleEvents` | `500` | Captured console records |
-| `snapshotMaxNodes` | `300` | Snapshot node cap |
-| `navTimeoutMs` | `15000` | Navigation timeout |
-| `commandTimeoutMs` | `30000` | Per-CDP-command timeout |
-| `maxTextChars` | `20000` | Text result cap |
-| `screenshotFormat` | `png` | `png` or `jpeg` |
-| `redactSensitive` | `true` | Strip credential-ish data from diagnostics |
-| `stealth` | `true` | Chrome UA/CH and `window.chrome` helpers |
-| `autoRestart` | `prompt` | `off`, `prompt` or `always` |
-| `restartDelayMs` | `2500` | Delay before the helper quits the app |
-| `restartGuardMs` | `120000` | Minimum spacing between restart attempts |
+| `endpoint` | 空 | 空表示自动发现运行中的应用 |
+| `allowPageTargets` | `false` | 默认不驱动 DSH UI 页面；开启也只允许 `http(s)` |
+| `maxNetworkEvents` | `1000` | 网络记录上限 |
+| `maxConsoleEvents` | `500` | Console 记录上限 |
+| `snapshotMaxNodes` | `300` | 快照节点上限 |
+| `navTimeoutMs` | `15000` | 导航超时 |
+| `commandTimeoutMs` | `30000` | 单条命令超时 |
+| `maxTextChars` | `20000` | 文本结果上限 |
+| `screenshotFormat` | `png` | `png` 或 `jpeg` |
+| `redactSensitive` | `true` | 诊断信息脱敏 |
+| `stealth` | `true` | Chrome UA/CH 与 `window.chrome` 补全 |
+| `autoRestart` | `prompt` | `off` / `prompt` / `always` |
+| `restartDelayMs` | `2500` | 退出应用前等待 |
+| `restartGuardMs` | `120000` | 重启尝试最小间隔 |
 
-## Persistent userscripts
+## 持久用户脚本
 
-`browser_inject_script { source, persist: true }` writes the snippet to:
+`browser_inject_script { source, persist: true }` 写入：
 
-- macOS: `~/.dsh/browser-cdp-scripts.json`
-- Windows: `%USERPROFILE%\.dsh\browser-cdp-scripts.json`
-- or `$DSH_HOME/browser-cdp-scripts.json` when set
+- macOS：`~/.dsh/browser-cdp-scripts.json`
+- Windows：`%USERPROFILE%\.dsh\browser-cdp-scripts.json`
+- 或 `$DSH_HOME/browser-cdp-scripts.json`
 
-The plugin:
+插件会：
 
-- reads the file 1.5 s after activation and attaches every current tab;
-- applies scripts to every new tab as it appears;
-- re-installs them after a plugin/app restart or a target recreation;
-- lists them with `browser_list_scripts`;
-- removes one with `browser_inject_script { remove: "<id>" }`.
+- 激活后 1.5 秒读取文件并 attach 当前所有标签页；
+- 新标签页出现时自动应用；
+- 插件/应用重启或 target 重建后重新安装；
+- 用 `browser_list_scripts` 列出；
+- 用 `browser_inject_script { remove: "<id>" }` 删除。
 
-Scripts are global to every Sidebar page and run with full page privileges.
-The file is plain JSON; review it before sharing a profile. External edits are
-picked up on the next plugin/app restart.
+脚本对所有 Sidebar 页面生效，拥有页面主世界权限；文件是明文 JSON。
+外部编辑后需要重启插件/应用才会重新读取。
 
-Example:
+示例：
 
 ```js
 browser_inject_script {
@@ -260,209 +233,169 @@ browser_inject_script {
 }
 ```
 
-## Stealth
+## Stealth（可选）
 
-`stealth: true` (default) reduces the most common "this is Electron" tells:
+`stealth: true`（默认）会去掉最常见的 Electron 特征：
 
-- replaces the Electron UA with desktop Chrome for the current Chromium version
-  (`Chrome/152.0.0.0` style);
-- sets matching `userAgentData` brands (`Google Chrome`, `Chromium`) and Client
-  Hints (`architecture`, `bitness`, `platformVersion`);
-- overrides `Accept-Language` and the network UA;
-- adds `chrome.app`, `chrome.csi`, `chrome.loadTimes` and `chrome.webstore` in
-  every frame, including iframes.
+- 将 Electron UA 替换为当前 Chromium 版本对应的桌面 Chrome UA；
+- 补全 `userAgentData` 的 `Google Chrome` / `Chromium` brand 与 Client Hints；
+- 覆盖 `Accept-Language` 和网络 UA；
+- 在所有 frame（含 iframe）补 `chrome.app`、`chrome.csi`、`chrome.loadTimes`、`chrome.webstore`。
 
-On `bot.sannysoft.com` this moved the result from Electron/`HEADCHR_IFRAME FAIL`
-to Chrome 152 with `WebDriver missing`, `PHANTOM_UA ok`, `HEADCHR_UA ok`,
-`HEADCHR_CHROME_OBJ ok`, `HEADCHR_IFRAME ok` and `CHR_DEBUG_TOOLS ok`.
+在 `bot.sannysoft.com` 上，从 Electron/`HEADCHR_IFRAME FAIL` 变为 Chrome 152，
+`WebDriver missing`、`PHANTOM_UA`、`HEADCHR_UA`、`HEADCHR_CHROME_OBJ`、
+`HEADCHR_IFRAME`、`CHR_DEBUG_TOOLS` 均通过。
 
-Limits:
+限制：
 
-- a page that loaded before the session attached already sent Electron request
-  headers; call `browser_reload` after the first attach;
-- the very first request of a new tab can still use Electron until the session
-  attaches; a main-process `webContents.setUserAgent` would be needed for a
-  zero-leak first request;
-- `chrome.csi` / `chrome.loadTimes` are JavaScript shims; a site that inspects
-  `Function.prototype.toString` can tell they are not native;
-- `chrome.runtime` is intentionally not faked;
-- no fingerprint layer guarantees passage through Cloudflare/Turnstile or a
-  site-specific risk engine;
-- `cf_clearance` cookies are UA-bound: after switching the UA, log in again.
+- 在 session attach 之前已加载的页面，首个请求仍可能带 Electron UA；attach 后调用
+  `browser_reload`；
+- 新标签页的首个请求也可能在 attach 之前发出；彻底无感需要 main 进程
+  `webContents.setUserAgent`；
+- `chrome.csi` / `chrome.loadTimes` 是 JS shim，检查 `Function.prototype.toString`
+  仍可能识别；
+- 不伪造 `chrome.runtime`；
+- 不保证通过 Cloudflare/Turnstile 或站点自定义风控；
+- `cf_clearance` 与 UA 绑定，切换 UA 后应重新登录。
 
-Set `stealth: false` for raw Electron behavior when debugging.
+调试时可设 `stealth: false`。
 
-## Sidebar split probe (client half)
+## 分屏探针（客户端 half）
 
-The Host bundle has no direct API to open or split the Sidebar: layout belongs
-to the client (`ui-sidebar-right` / `ui-dockkit`). The bundle includes an
-**opt-in client probe** that demonstrates the client API:
+Host bundle 没有直接打开/拆分侧栏的 API：布局属于客户端
+`ui-sidebar-right` / `ui-dockkit`。插件包含一个 **opt-in 客户端探针**：
 
 ```js
 localStorage['dsh-browser-cdp.probe'] = 'split'
 ```
 
-After a client reload, the probe:
+客户端重载后：
 
-1. waits for a mounted Session;
-2. calls `ctx.sidebarRight.toggleExpanded()`;
-3. calls `ctx.sidebarRight.split()`;
-4. if a new pane is returned, calls
-   `ctx.sidebarRight.openTab('browser', { paneId, params: { url } })`.
+1. 等待 Session 挂载；
+2. `ctx.sidebarRight.toggleExpanded()`；
+3. `ctx.sidebarRight.split()`；
+4. 如果得到新 pane，调用
+   `ctx.sidebarRight.openTab('browser', { paneId, params: { url } })`。
 
-The result is written to `localStorage['dsh-browser-cdp.probe.result']`.
+结果写入 `localStorage['dsh-browser-cdp.probe.result']`。
 
-Requirements:
+前提：
 
-- the client boot graph must include this bundle's `./client` entry (reload or
-  restart after installing);
-- the Sidebar must have fewer than two docked panes; `split()` returns
-  `undefined` at the two-pane budget or when the pane is empty/floating or the
-  halves do not fit.
+- 客户端 boot graph 已包含本 bundle 的 `./client`（安装后重载/重启）；
+- 侧栏少于两个 docked pane；`split()` 在预算已满、pane 为空/浮动、或两半放不下时返回
+  `undefined`。
 
-This probe is a developer diagnostic, not a Host tool. A Host↔client bridge
-would be needed to expose split/open-pane as an agent tool. In the current Host
-API, `window.open` stays in the source tab's pane, and `browser_navigate` just
-navigates the chosen target.
+这是开发诊断，不是 Host 工具。要让 agent 工具直接分屏，需要 Host↔client 桥。
 
-## Windows notes
+## Windows
 
-- Install the official DeepSeek Harness desktop app; no Node/npm is required
-  for a prebuilt GitHub install.
-- The confirmation dialog is PowerShell/WPF (`MessageBox` with OK/Cancel).
-- Quit uses `taskkill /PID`; if the app does not close within 20 s, it falls
-  back to `/F`. Sessions survive, but unsaved UI state may not.
-- The restart log is at `%USERPROFILE%\.dsh\browser-cdp-restart.log`.
-- The CDP port is loopback-only. No firewall rule should be needed.
-- If the helper cannot start (antivirus/EDR), `browser_enable_cdp` and the log
-  are the first places to check. Running DSH elevated while the helper is not
-  (or vice versa) can also block `taskkill`.
-- `scripts/dsh-cdp.sh` is macOS-only; use `browser_enable_cdp` on Windows.
+- 使用官方 DeepSeek Harness 桌面版；预构建 GitHub/npm 安装不需要 Node/npm。
+- 弹窗：PowerShell/WPF `MessageBox`（OK/Cancel）。
+- 退出：`taskkill /PID`；20 秒未退出则 `/F`。会话保留，但未保存的 UI 状态可能丢失。
+- 日志：`%USERPROFILE%\.dsh\browser-cdp-restart.log`。
+- 调试端口仅监听 loopback，不需要防火墙入站规则。
+- helper 被杀软/EDR 拦截时先看日志；DSH 与 helper 权限不一致也可能导致 `taskkill` 失败。
+- `scripts/dsh-native-browser.sh` 仅 macOS；Windows 用 `browser_enable_cdp`。
 
-### Windows test checklist
+### Windows 测试清单
 
-1. Install DSH and confirm the Sidebar browser works.
-2. Install the bundle from GitHub or a local path.
-3. Restart DSH.
-4. Ask the agent: `browser_diagnose`.
-5. If CDP is missing, click OK in the dialog or call `browser_enable_cdp`.
-6. `browser_navigate https://example.com`, then `browser_snapshot`.
-7. Check `browser_list_tabs`, a screenshot and a persistent script.
-8. Check the restart log and `browser-cdp.json` under `%USERPROFILE%\.dsh`.
+1. 安装 DSH，确认侧边栏浏览器可用。
+2. 用 npm 包名或本地路径安装。
+3. 重启 DSH。
+4. `browser_diagnose`。
+5. 没有端点时点 OK，或 `browser_enable_cdp`。
+6. `browser_navigate https://example.com`，再 `browser_snapshot`。
+7. 验证 `browser_list_tabs`、截图、持久脚本。
+8. 检查 `%USERPROFILE%\.dsh\browser-cdp-restart.log` 与 `browser-cdp.json`。
 
-## Troubleshooting
+## 故障排查
 
-| Symptom | Check |
+| 现象 | 检查 |
 | --- | --- |
-| `CDP: not available` | Call `browser_enable_cdp`; inspect the restart log |
-| Dialog never appears | `autoRestart: off`; plugin failed to load; client boot error |
-| OK closes the app but it does not reopen | Restart log; antivirus; try a manual launch with `--remote-debugging-port=0` |
-| Stale endpoint | Delete `$DSH_HOME/browser-cdp.json` and restart; the helper rewrites it |
-| Tool acts on the wrong pane | Pass explicit `targetId` from `browser_list_tabs` |
-| Split probe returns `pane: null` | Already two docked panes, empty/floating pane, or no room |
-| Persistent script missing | `browser_list_scripts`; path; restart after external edits |
+| 浏览器调试未连接（`CDP: not available`） | 调用 `browser_enable_cdp`；查看重启日志 |
+| 弹窗不出现 | `autoRestart: off`；插件未加载；客户端 boot 错误 |
+| OK 后应用关闭但不重启 | 重启日志；杀软；手动带调试端口启动 |
+| 端点过期 | 删除 `$DSH_HOME/browser-cdp.json` 并重启 |
+| 工具作用到另一屏 | 显式传 `browser_list_tabs` 返回的 `targetId` |
+| 分屏探针 `pane: null` | 已有两个 docked pane、pane 为空/浮动、或空间不足 |
+| 持久脚本缺失 | `browser_list_scripts`；检查路径；外部编辑后重启 |
 
-## Development
+## 开发
 
 ```bash
 npm install
 npm run typecheck
 npm run build
-npm run check:lib      # build and fail if committed lib/ is stale
+npm run check:lib      # build + 检查提交的 lib/ 是否最新
 npm run pack:check     # npm pack --dry-run
 ```
 
-Layout:
+目录：
 
 ```
-src/                 Host plugin (tools, CDP session, restart helper, stealth)
-src/client/          Opt-in client split probe
-lib/                 Built output, committed for GitHub installs
-cordis.patch.yml     Bundle row and desktop-only guard
-locale/              UI strings
-scripts/dsh-cdp.sh   macOS launcher (optional)
+src/                 Host：工具、浏览器调试 session、重启 helper、stealth
+src/client/          可选客户端分屏探针
+lib/                 已提交的构建产物（GitHub/npm 安装不需要 tsc）
+cordis.patch.yml     bundle 行（native-browser）与桌面限定
+locale/              UI 文案
+scripts/dsh-native-browser.sh   macOS 可选启动器
 ```
 
-`lib/` is committed on purpose: `plugin_manager install_bundle github:...` must
-not need TypeScript at install time. CI runs `npm run build` and fails if `lib/`
-differs.
+CI 在 Ubuntu、Windows、macOS 上使用 Node 22 执行 `typecheck`、`build`、
+`git diff --exit-code -- lib` 和 `npm pack --dry-run`。
 
-### CI
+## 发布到 npm
 
-`.github/workflows/ci.yml` builds on Ubuntu, Windows and macOS with Node 22,
-runs `typecheck`, `build`, `git diff --exit-code -- lib` and `npm pack --dry-run`.
-
-### Publish to npm
-
-The npm package name is `dsh-browser-cdp-plugin` (verified available when this
-repository was prepared; re-check with `npm view dsh-browser-cdp-plugin` if you
-are publishing later).
+npm 包名是 `deepseek-native-browser`：
 
 ```bash
 npm login
 npm publish
-npm view dsh-browser-cdp-plugin version
+npm view deepseek-native-browser version
 ```
 
-`prepublishOnly` runs `npm run build`, so `lib/` is refreshed before publishing.
-The package is unscoped and `publishConfig.access` is `public`.
+`prepublishOnly` 会执行 `npm run build`，`lib/` 会先刷新；包是 unscoped，
+`publishConfig.access` 为 `public`。
 
-After publishing, the DSH prompt accepts `dsh-browser-cdp-plugin`, and
-`plugin_manager install_bundle dsh-browser-cdp-plugin@1.0.0` is the tool-level
-equivalent.
+发布后 DSH 提示框即可接受 `deepseek-native-browser`；
+`plugin_manager install_bundle deepseek-native-browser@1.0.0` 是等价的工具调用。
 
-### Publish this repository
-
-Check the remote first:
+## 发布仓库
 
 ```bash
-git remote -v
-# origin should point at safumo/dsh-browser-cdp
-```
-
-If `origin` is not set:
-
-```bash
-git remote add origin git@github.com:safumo/dsh-browser-cdp.git
-```
-
-Then push:
-
-```bash
+git remote -v          # origin 应为 safumo/dsh-browser-cdp
 git push -u origin main
-```
-
-Create a public repository named `safumo/dsh-browser-cdp`, then tag a release:
-
-```bash
 git tag v1.0.0
-git push origin main --tags
+git push origin v1.0.0
 ```
 
-Create a GitHub release from the tag (optional, but recommended). Users can then
-install the tag with
-`github:safumo/dsh-browser-cdp#v1.0.0`.
+在 GitHub 创建 Release。用户也可以按 tag 安装：
 
-The repository already includes the built `lib/` output, so a GitHub install
-does not need Node.js or TypeScript on the target machine. Do not add `lib/` to
-`.gitignore`.
+```text
+github:safumo/dsh-browser-cdp#v1.0.0
+```
 
-## Known limits
+`lib/` 是已提交的构建产物，GitHub 安装不需要 Node/TypeScript。不要把 `lib/` 加入
+`.gitignore`。
 
-- The app must be restarted to enable CDP; an already-running process cannot be
-  switched on in place.
-- CDP is loopback-only but exposes the whole app Chromium; do not expose it to a
-  network.
-- Cross-origin iframes are not first-class targets; tools act on the main frame.
-- `Page.reload` on a `<webview>` recreates the guest and drops the CDP session;
-  the plugin uses `location.reload()` instead.
-- `targetId` changes when a pane/tab is recreated, dragged or moved; re-list.
-- Very small Sidebar widths can make split/pointer input unreliable; activate
-  the tab or use `browser_evaluate`.
-- The plugin cannot create tabs or split panes from the Host API; see the client
-  probe.
-- No stealth layer guarantees passage through Cloudflare/Turnstile.
+## 已知限制
+
+- 已运行的应用不能原地开启调试端口，需要一次重启。
+- 调试端口仅监听 loopback，但能控制整个应用 Chromium；不要暴露到网络。
+- 跨域 iframe 不是一等 target，工具作用于主 frame。
+- `Page.reload` 会重建 webview 并丢失 session；插件改用 `location.reload()`。
+- `targetId` 会在 pane/tab 重建、拖拽后变化，需重新 `browser_list_tabs`。
+- 极窄的 Sidebar 可能影响分屏和真实指针输入；用 `browser_evaluate` 兜底。
+- Host API 不能直接创建 tab 或 split；见客户端探针。
+- 任何 stealth 层都不保证通过 Cloudflare/Turnstile。
+
+## 安全
+
+- 调试端口、Cookie、持久脚本都属于本机敏感能力，不要共享 profile。
+- `allowPageTargets` 默认关闭，避免驱动 DSH UI 页面。
+- 持久脚本是明文；不要把密钥写进脚本。
+- 漏洞请私下联系仓库维护者，不要在公开 issue 中贴敏感信息。
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT。见 [LICENSE](LICENSE)。

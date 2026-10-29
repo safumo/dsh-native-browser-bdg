@@ -1,10 +1,10 @@
 #!/bin/zsh
-# Start DeepSeek Harness with an auto-discovered CDP port.
+# Start DeepSeek Harness with an auto-discovered browser debugging port.
 #
 # Usage:
-#   dsh-cdp.sh            focus an already-connected app, or start a stopped one
-#   dsh-cdp.sh --restart  relaunch a running app that has no CDP port
-#   dsh-cdp.sh --prompt   ask before relaunching a running app without CDP
+#   dsh-native-browser.sh            focus an already-connected app, or start a stopped one
+#   dsh-native-browser.sh --restart  relaunch a running app that has no debugging port
+#   dsh-native-browser.sh --prompt   ask before relaunching a running app without a debugging port
 set -euo pipefail
 
 BUNDLE_ID="com.deepseek.dsh"

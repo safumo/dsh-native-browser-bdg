@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Browser CDP Control",
-    "description": "Drive the in-app Sidebar browser over the Chrome DevTools Protocol: navigation, snapshot/click, cookies, storage, network and screenshots."
+    "title": "DeepSeek Native Browser",
+    "description": "Reuses the official DeepSeek Harness Sidebar browser in-app: no external Chrome, no extra extension and no screen switching."
   }
 }
