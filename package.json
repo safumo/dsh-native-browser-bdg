@@ -1,17 +1,17 @@
 {
-  "name": "dsh-browser-cdp",
+  "name": "dsh-browser-cdp-plugin",
   "version": "1.0.0",
   "description": "DeepSeek Harness bundle: drive the in-app Sidebar browser over the Chrome DevTools Protocol, with CDP auto-restart, persistent userscripts and an optional stealth layer.",
   "type": "module",
   "license": "MIT",
-  "author": "dsh-browser-cdp contributors",
+  "author": "safumo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_GITHUB_USER/dsh-browser-cdp.git"
+    "url": "https://github.com/safumo/dsh-browser-cdp.git"
   },
-  "homepage": "https://github.com/YOUR_GITHUB_USER/dsh-browser-cdp#readme",
+  "homepage": "https://github.com/safumo/dsh-browser-cdp#readme",
   "bugs": {
-    "url": "https://github.com/YOUR_GITHUB_USER/dsh-browser-cdp/issues"
+    "url": "https://github.com/safumo/dsh-browser-cdp/issues"
   },
   "keywords": [
     "deepseek-harness",
@@ -67,5 +67,8 @@
       ],
       "platform": "web"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

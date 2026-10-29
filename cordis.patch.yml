@@ -6,7 +6,7 @@
 # --remote-debugging-port=0, Cancel leaves it untouched.
 - insert:
     - id: browser-cdp
-      name: dsh-browser-cdp
+      name: dsh-browser-cdp-plugin
       disabled: !!js "ctx.get('profileContext')?.name !== 'desktop'"
       config:
         autoRestart: prompt

@@ -1,6 +1,10 @@
-![CI](https://github.com/YOUR_GITHUB_USER/dsh-browser-cdp/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/safumo/dsh-browser-cdp/actions/workflows/ci.yml/badge.svg)
+[![npm](https://img.shields.io/npm/v/dsh-browser-cdp-plugin.svg)](https://www.npmjs.com/package/dsh-browser-cdp-plugin)
 
 # dsh-browser-cdp
+
+**Install name:** [`dsh-browser-cdp-plugin`](https://www.npmjs.com/package/dsh-browser-cdp-plugin)  
+**Repository:** [`safumo/dsh-browser-cdp`](https://github.com/safumo/dsh-browser-cdp)
 
 A **DeepSeek Harness bundle** that drives the in-app **Sidebar browser** over the
 Chrome DevTools Protocol (CDP).
@@ -45,34 +49,60 @@ also checks `process.versions.electron` at runtime.
 
 ## Install
 
-### Option A — from GitHub (recommended)
+### The DSH prompt (recommended)
 
-Ask the DSH agent to install the bundle, or use the plugin-manager UI:
+In DeepSeek Harness, open the plugin installer and choose **Enter the plugin's
+npm package name**, then enter:
 
-```json
-{ "action": "install_bundle", "target": "github:YOUR_GITHUB_USER/dsh-browser-cdp" }
+```
+dsh-browser-cdp-plugin
 ```
 
-Pin a release:
+Or use the CLI / package manager:
+
+```bash
+dsh plugin add dsh-browser-cdp-plugin
+# or
+pnpm add dsh-browser-cdp-plugin
+```
+
+The **npm package is `dsh-browser-cdp-plugin`**; the repository is
+`safumo/dsh-browser-cdp`. The unscoped `dsh-browser-cdp` name is already used by
+an unrelated npm package, so the installable package uses the `-plugin` suffix.
+
+The package ships prebuilt `lib/` files, so a DSH install does not require
+Node.js, npm or a TypeScript build on the target machine. Restart DeepSeek
+Harness once after installing; the bundle patch inserts the Host row
+`browser-cdp` automatically.
+
+> The package must be published to npm first. Maintainers: see
+> [Publish to npm](#publish-to-npm).
+
+### From GitHub (alternative)
+
+If the package is not on npm, install the repository tag through the plugin
+manager:
 
 ```json
-{ "action": "install_bundle", "target": "github:YOUR_GITHUB_USER/dsh-browser-cdp#v1.0.0" }
+{ "action": "install_bundle", "target": "github:safumo/dsh-browser-cdp#v1.0.0" }
+```
+
+Latest `main`:
+
+```json
+{ "action": "install_bundle", "target": "github:safumo/dsh-browser-cdp" }
 ```
 
 A plain HTTPS spec can also work in some DSH builds:
 
 ```
-https://github.com/YOUR_GITHUB_USER/dsh-browser-cdp
+https://github.com/safumo/dsh-browser-cdp
 ```
 
-The package ships prebuilt `lib/` files, so installation does not require a
-TypeScript build. Restart DeepSeek Harness once after installing; the bundle
-patch inserts one Host row (`browser-cdp`).
-
-### Option B — from a local clone
+### From a local clone
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USER/dsh-browser-cdp.git
+git clone https://github.com/safumo/dsh-browser-cdp.git
 cd dsh-browser-cdp
 npm install
 npm run build
@@ -90,19 +120,9 @@ Windows PowerShell:
 { "action": "install_bundle", "target": "C:\\Users\\<you>\\dsh-browser-cdp" }
 ```
 
-If your DSH build requires a `file:` spec, use `file:C:/Users/<you>/dsh-browser-cdp`
-(or the macOS/Linux equivalent). Quote paths that contain spaces.
-
-### Option C — npm (optional)
-
-If you publish the package to a registry:
-
-```
-npm publish
-plugin_manager install_bundle dsh-browser-cdp@1.0.0
-```
-
-`private` is intentionally not set, so `npm publish` is allowed.
+If your DSH build requires a `file:` spec, use
+`file:C:/Users/<you>/dsh-browser-cdp` (or the macOS/Linux equivalent). Quote
+paths that contain spaces.
 
 ### After install
 
@@ -372,28 +392,56 @@ differs.
 `.github/workflows/ci.yml` builds on Ubuntu, Windows and macOS with Node 22,
 runs `typecheck`, `build`, `git diff --exit-code -- lib` and `npm pack --dry-run`.
 
+### Publish to npm
+
+The npm package name is `dsh-browser-cdp-plugin` (verified available when this
+repository was prepared; re-check with `npm view dsh-browser-cdp-plugin` if you
+are publishing later).
+
+```bash
+npm login
+npm publish
+npm view dsh-browser-cdp-plugin version
+```
+
+`prepublishOnly` runs `npm run build`, so `lib/` is refreshed before publishing.
+The package is unscoped and `publishConfig.access` is `public`.
+
+After publishing, the DSH prompt accepts `dsh-browser-cdp-plugin`, and
+`plugin_manager install_bundle dsh-browser-cdp-plugin@1.0.0` is the tool-level
+equivalent.
+
 ### Publish this repository
 
-1. Replace every `YOUR_GITHUB_USER` in `package.json` and `README.md` with your
-   GitHub account.
-2. Create an empty public repository named `dsh-browser-cdp`.
-3. Push:
+Check the remote first:
 
-   ```bash
-   git remote add origin git@github.com:YOUR_GITHUB_USER/dsh-browser-cdp.git
-   git push -u origin main
-   ```
+```bash
+git remote -v
+# origin should point at safumo/dsh-browser-cdp
+```
 
-4. Create a release tag:
+If `origin` is not set:
 
-   ```bash
-   git tag v1.0.0
-   git push origin main --tags
-   ```
+```bash
+git remote add origin git@github.com:safumo/dsh-browser-cdp.git
+```
 
-5. Create a GitHub release from the tag (optional, but recommended). Users can
-   then install the tag with
-   `github:YOUR_GITHUB_USER/dsh-browser-cdp#v1.0.0`.
+Then push:
+
+```bash
+git push -u origin main
+```
+
+Create a public repository named `safumo/dsh-browser-cdp`, then tag a release:
+
+```bash
+git tag v1.0.0
+git push origin main --tags
+```
+
+Create a GitHub release from the tag (optional, but recommended). Users can then
+install the tag with
+`github:safumo/dsh-browser-cdp#v1.0.0`.
 
 The repository already includes the built `lib/` output, so a GitHub install
 does not need Node.js or TypeScript on the target machine. Do not add `lib/` to
