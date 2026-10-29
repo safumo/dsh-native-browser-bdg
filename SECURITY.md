@@ -1,6 +1,6 @@
 # Security
 
-`dsh-browser-cdp` starts a loopback-only Chrome DevTools Protocol endpoint and
+`deepseek-native-browser` starts a loopback-only browser debugging endpoint and
 registers tools that can execute arbitrary JavaScript in the Sidebar browser.
 Treat it as a local debugging capability.
 

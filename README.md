@@ -1,10 +1,10 @@
-![CI](https://github.com/safumo/dsh-browser-cdp/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/safumo/dsh-native-browser-ext/actions/workflows/ci.yml/badge.svg)
 [![npm](https://img.shields.io/npm/v/deepseek-native-browser.svg)](https://www.npmjs.com/package/deepseek-native-browser)
 
 # DeepSeek 原生浏览器扩展
 
 **安装名：** [`deepseek-native-browser`](https://www.npmjs.com/package/deepseek-native-browser)  
-**仓库：** [`safumo/dsh-browser-cdp`](https://github.com/safumo/dsh-browser-cdp)
+**仓库：** [`safumo/dsh-native-browser-ext`](https://github.com/safumo/dsh-native-browser-ext)
 
 复用 **DeepSeek Harness 官方侧边栏浏览器**（应用内 `<webview>`），在 DSH 窗口里原生运行。
 
@@ -53,8 +53,8 @@ dsh plugin add deepseek-native-browser
 pnpm add deepseek-native-browser
 ```
 
-**npm 包名是 `deepseek-native-browser`**；仓库名是 `safumo/dsh-browser-cdp`。
-两者不同是正常的：仓库保留历史地址，安装时只认 npm 包名。
+**npm 包名是 `deepseek-native-browser`**；仓库名是 `safumo/dsh-native-browser-ext`。
+两者不同是正常的：npm 包名与仓库名可以不同，安装时只认 npm 包名。
 
 > 必须先发布到 npm，提示框才能按包名安装。维护者见
 > [发布到 npm](#发布到-npm)。
@@ -68,35 +68,35 @@ pnpm add deepseek-native-browser
 ### GitHub 安装（npm 发布前可用）
 
 ```json
-{ "action": "install_bundle", "target": "github:safumo/dsh-browser-cdp#v1.0.0" }
+{ "action": "install_bundle", "target": "github:safumo/dsh-native-browser-ext#v1.0.0" }
 ```
 
 或最新 main：
 
 ```json
-{ "action": "install_bundle", "target": "github:safumo/dsh-browser-cdp" }
+{ "action": "install_bundle", "target": "github:safumo/dsh-native-browser-ext" }
 ```
 
 ### 本地路径
 
 ```bash
-git clone https://github.com/safumo/dsh-browser-cdp.git
-cd dsh-browser-cdp
+git clone https://github.com/safumo/dsh-native-browser-ext.git
+cd dsh-native-browser-ext
 npm install
 npm run build
 ```
 
 ```json
-{ "action": "install_bundle", "target": "/absolute/path/to/dsh-browser-cdp" }
+{ "action": "install_bundle", "target": "/absolute/path/to/dsh-native-browser-ext" }
 ```
 
 Windows PowerShell：
 
 ```json
-{ "action": "install_bundle", "target": "C:\\\\Users\\\\<you>\\\\dsh-browser-cdp" }
+{ "action": "install_bundle", "target": "C:\\\\Users\\\\<you>\\\\dsh-native-browser-ext" }
 ```
 
-如果 DSH 构建要求 `file:` spec，用 `file:C:/Users/<you>/dsh-browser-cdp`。
+如果 DSH 构建要求 `file:` spec，用 `file:C:/Users/<you>/dsh-native-browser-ext`。
 
 ### 安装后
 
@@ -363,7 +363,7 @@ npm view deepseek-native-browser version
 ## 发布仓库
 
 ```bash
-git remote -v          # origin 应为 safumo/dsh-browser-cdp
+git remote -v          # origin 应为 safumo/dsh-native-browser-ext
 git push -u origin main
 git tag v1.0.0
 git push origin v1.0.0
@@ -372,7 +372,7 @@ git push origin v1.0.0
 在 GitHub 创建 Release。用户也可以按 tag 安装：
 
 ```text
-github:safumo/dsh-browser-cdp#v1.0.0
+github:safumo/dsh-native-browser-ext#v1.0.0
 ```
 
 `lib/` 是已提交的构建产物，GitHub 安装不需要 Node/TypeScript。不要把 `lib/` 加入

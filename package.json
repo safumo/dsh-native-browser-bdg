@@ -7,11 +7,11 @@
   "author": "safumo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/safumo/dsh-browser-cdp.git"
+    "url": "https://github.com/safumo/dsh-native-browser-ext.git"
   },
-  "homepage": "https://github.com/safumo/dsh-browser-cdp#readme",
+  "homepage": "https://github.com/safumo/dsh-native-browser-ext#readme",
   "bugs": {
-    "url": "https://github.com/safumo/dsh-browser-cdp/issues"
+    "url": "https://github.com/safumo/dsh-native-browser-ext/issues"
   },
   "keywords": [
     "deepseek",
